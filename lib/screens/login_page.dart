@@ -64,7 +64,10 @@ class LoginPage extends StatelessWidget {
                   primary: Colors.purple, // Background color
                   minimumSize: Size(double.infinity, 50), // Full width button
                 ),
-                child: Text('Masuk'),
+                child: Text(
+                  'Masuk',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
               SizedBox(height: 20.0),
               GestureDetector(

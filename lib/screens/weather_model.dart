@@ -16,10 +16,11 @@ class Weather {
   factory Weather.fromJson(Map<String, dynamic> json) {
     return Weather(
       date: json['time'],
-      temperature: json['values']['temperature'],
+      temperature: (json['values']['temperature'] as num).toDouble(),
       description: json['values']['weatherCode'] == 1000 ? 'Clear' : 'Cloudy',
-      precipitation: json['values']['precipitationProbability'],
-      windSpeed: json['values']['windSpeed'],
+      precipitation:
+          (json['values']['precipitationProbability'] as num).toDouble(),
+      windSpeed: (json['values']['windSpeed'] as num).toDouble(),
     );
   }
 }

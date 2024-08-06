@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smartm/screens/data_display_page.dart';
 //import 'screens/splash_screen.dart';
-import 'screens/data_display_page.dart';
 
 void main() {
   runApp(const MainApp());
