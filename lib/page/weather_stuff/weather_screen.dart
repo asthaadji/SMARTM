@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'weather_model.dart';
-import 'weather_services.dart';
+import '../../services/weather/weather_model.dart';
+import '../../services/weather/weather_services.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -27,8 +27,20 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder<List<Weather>>(
+    return Container(
+      margin: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+          ),
+        ],
+      ),
+      child: FutureBuilder<List<Weather>>(
         future: _weatherData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -38,7 +50,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('No data available'));
           } else {
-            return ListView.builder(
+            return Scrollbar(
+                child: ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 final weather = snapshot.data![index];
@@ -50,7 +63,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   trailing: Text(weather.date),
                 );
               },
-            );
+            ));
           }
         },
       ),

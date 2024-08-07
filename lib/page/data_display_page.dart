@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'weather_screen.dart'; // Ubah impor ini
+import 'weather_stuff/weather_screen.dart'; // Ubah impor ini
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({Key? key}) : super(key: key);
@@ -11,25 +11,41 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: 
-        Image.asset('assets/LogoHorizontal.png',height: 40),
-      ),
-      body: const SingleChildScrollView(
-        child: Column(
-          children: [
-            WeatherInfo(),
-            IoTSensorMap(),
-            SensorData(),
-          ],
+      body: Container(
+        padding: const EdgeInsets.all(8),
+        child: const SingleChildScrollView(
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Informasi Cuaca',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+              ),
+              SizedBox(height: 8),
+              WeatherInfo(),
+              SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Peta Sensor IoT',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+              ),
+              SizedBox(height: 8),
+              IoTSensorMap(),
+              SensorData(),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class WeatherInfo extends StatelessWidget { // Ubah menjadi StatelessWidget
+class WeatherInfo extends StatelessWidget {
+  // Ubah menjadi StatelessWidget
   const WeatherInfo({Key? key}) : super(key: key);
 
   @override
@@ -62,12 +78,13 @@ class IoTSensorMap extends StatelessWidget {
       ),
       child: FlutterMap(
         options: const MapOptions(
-          center: LatLng(-6.9808233,110.1316992),
+          center: LatLng(-6.9808233, 110.1316992),
           zoom: 15.0,
         ),
         children: [
           TileLayer(
-            urlTemplate: "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=tWC4SpLdQd1Cz0ch2fvw",
+            urlTemplate:
+                "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=tWC4SpLdQd1Cz0ch2fvw",
             additionalOptions: const {
               'attribution': '© OpenStreetMap contributors',
             },
@@ -130,7 +147,8 @@ class SensorDataTile extends StatelessWidget {
   final String label;
   final String value;
 
-  const SensorDataTile({Key? key, required this.label, required this.value}) : super(key: key);
+  const SensorDataTile({Key? key, required this.label, required this.value})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +163,9 @@ class SensorDataTile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: const TextStyle(fontSize: 16)),
-          Text(value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(value,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         ],
       ),
     );
