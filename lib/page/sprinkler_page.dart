@@ -10,6 +10,16 @@ class SprinklerPage extends StatefulWidget {
 class _SprinklerPageState extends State<SprinklerPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Container(
+      padding: const EdgeInsets.all(10),
+      child: Column(children: [
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Kontrol Sprinkle Sprayer",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ))
+      ]),
+    );
   }
 }

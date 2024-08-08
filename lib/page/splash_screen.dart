@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartm/page/user_auth/login_page.dart';
 
 class SplashScreen extends StatelessWidget {
+  SplashScreen({super.key});
   @override
   Widget build(BuildContext context) {
     Future.delayed(Duration(seconds: 5), () {
