@@ -1,11 +1,39 @@
-class User {
+class UserLogin {
+  final String email;
+  final String name;
+  final String token;
+
+  UserLogin({
+    required this.email,
+    required this.name,
+    required this.token,
+  });
+
+  factory UserLogin.fromJson(Map<String, dynamic> json) {
+    return UserLogin(
+      email: json['email'],
+      name: json['name'],
+      token: json['token'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'name': name,
+      'token': token,
+    };
+  }
+}
+
+class UserReg {
   final String name;
   final String email;
 
-  User({required this.name, required this.email});
+  UserReg({required this.name, required this.email});
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+  factory UserReg.fromJson(Map<String, dynamic> json) {
+    return UserReg(
       email: json['email'],
       name: json['name'],
     );

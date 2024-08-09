@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:smartm/page/dashboard_page.dart';
+import 'package:smartm/page/main_nav_page.dart';
+import 'package:smartm/services/auth/auth_service.dart';
 import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -13,6 +16,28 @@ class _LoginPageState extends State<LoginPage> {
   bool _isObscure = true;
   final GlobalKey<ScaffoldMessengerState> scaffoldKey =
       GlobalKey<ScaffoldMessengerState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
+
+  void _login() async {
+    final email = emailController.text;
+    final password = passwordController.text;
+
+    try {
+      if (email.isEmpty || password.isEmpty) {
+        throw ('Silahkan isi email dan password');
+      }
+
+      final user = await _authService.login(email, password);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => MainNavPage(user: user)),
+          (route) => false);
+    } catch (e) {
+      scaffoldKey.currentState
+          ?.showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +57,16 @@ class _LoginPageState extends State<LoginPage> {
                   height: 50.0,
                 ),
                 SizedBox(height: 50.0),
-                Text(
+                const Text(
                   'Login',
                   style: TextStyle(
                     fontSize: 24.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 30.0),
+                const SizedBox(height: 30.0),
                 TextField(
+                  controller: emailController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
@@ -48,8 +74,9 @@ class _LoginPageState extends State<LoginPage> {
                     labelText: 'Email',
                   ),
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 TextField(
+                  controller: passwordController,
                   obscureText: _isObscure,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
@@ -77,21 +104,21 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 30.0),
+                const SizedBox(height: 30.0),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle login
+                    _login();
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.purple, // Background color
+                    backgroundColor: Colors.purple, // Background color
                     minimumSize: Size(double.infinity, 50), // Full width button
                   ),
-                  child: Text(
+                  child: const Text(
                     'Masuk',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 GestureDetector(
                   onTap: () {
                     // Handle sign up
@@ -101,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                           builder: (context) => RegistrationPage()),
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     'Belum memiliki akun? Daftar Disini',
                     style: TextStyle(
                       color: Colors.blue,

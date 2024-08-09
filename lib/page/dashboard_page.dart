@@ -3,10 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:smartm/services/auth/auth_model.dart';
 import 'weather_stuff/weather_screen.dart'; // Ubah impor ini
 
 class DashboardPage extends StatelessWidget {
-  const DashboardPage({Key? key}) : super(key: key);
+  final UserLogin user;
+  const DashboardPage({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {

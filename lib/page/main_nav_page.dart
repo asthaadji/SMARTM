@@ -1,31 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smartm/page/data_display_page.dart';
+import 'package:smartm/page/dashboard_page.dart';
 import 'package:smartm/page/guide_page.dart';
 import 'package:smartm/page/sprinkler_page.dart';
 import 'package:smartm/page/user_page.dart';
+import 'package:smartm/services/auth/auth_model.dart';
 import 'package:smartm/shared/theme.dart';
 import 'package:fluttericon/entypo_icons.dart';
 
 class MainNavPage extends StatelessWidget {
-  const MainNavPage({super.key});
+  final UserLogin user;
+  const MainNavPage({super.key, required this.user});
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => PageIndexProvider(),
-      child: _MainPage(),
+      child: _MainPage(user: user),
     );
   }
 }
 
 class _MainPage extends StatefulWidget {
+  final UserLogin user;
+  const _MainPage({required this.user});
   @override
   State<_MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<_MainPage> {
   List<Widget> get pages => [
-        DashboardPage(),
+        DashboardPage(user: widget.user),
         SprinklerPage(),
         GuidePage(),
         UserPage(),
@@ -66,7 +70,7 @@ class _MainPageState extends State<_MainPage> {
                     },
                     showSelectedLabels: false,
                     showUnselectedLabels: false,
-                    items: [
+                    items: const [
                       BottomNavigationBarItem(
                           icon: Icon(Icons.home), label: ""),
                       BottomNavigationBarItem(
