@@ -75,23 +75,25 @@ class _SprinklerPageState extends State<SprinklerPage> {
                   ),
                 ]),
             padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                ListView(
-                  shrinkWrap: true,
-                  children: [
-                    ListTile(
-                      title: Text('Sprinkler Status'),
-                      trailing: Switch(
-                          value: sprinkler.isActive,
-                          onChanged: (value) async {
-                            await toggleSprinkler(value);
-                          }),
-                    )
-                  ],
-                )
-              ],
-            ))
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : Column(
+                    children: [
+                      ListView(
+                        shrinkWrap: true,
+                        children: [
+                          ListTile(
+                            title: Text('Sprinkler Status'),
+                            trailing: Switch(
+                                value: sprinkler.isActive,
+                                onChanged: (value) async {
+                                  await toggleSprinkler(value);
+                                }),
+                          )
+                        ],
+                      )
+                    ],
+                  ))
       ]),
     );
   }
