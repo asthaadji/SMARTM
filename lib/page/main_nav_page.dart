@@ -28,75 +28,86 @@ class _MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<_MainPage> {
+  final GlobalKey<ScaffoldMessengerState> _scaffoldkey =
+      GlobalKey<ScaffoldMessengerState>();
   List<Widget> get pages => [
         DashboardPage(user: widget.user),
-        SprinklerPage(),
+        SprinklerPage(
+            authToken: widget.user.token, onShowSnackBar: showSnackBar),
         GuidePage(),
         UserPage(),
       ];
+
+  void showSnackBar(String message) {
+    _scaffoldkey.currentState?.showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Padding(
-            padding:const EdgeInsets.all(4.0),
-            child: Image.asset('assets/LogoHorizontal.png', height: 40)),
-          elevation: 0.0,
-        ),
-        bottomNavigationBar: Consumer<PageIndexProvider>(
-          builder: (context, pageIndexProvider, _) {
-            return Container(
-              height: 59,
-              decoration: ShapeDecoration(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25)),
-                  shadows: const [
-                    BoxShadow(
-                        color: Color(0x3F000000),
-                        blurRadius: 3.50,
-                        offset: Offset(0, 3.50),
-                        spreadRadius: 0)
-                  ]),
-              child: ClipRRect(
-                child: BottomNavigationBar(
-                    type: BottomNavigationBarType.fixed,
-                    backgroundColor: Colors.white,
-                    selectedItemColor: AppTheme.primaryColor,
-                    unselectedItemColor: AppTheme.passiveColor,
-                    currentIndex: pageIndexProvider.index,
-                    onTap: (index) {
-                      setState(() {
-                        pageIndexProvider.changeIndex(index);
-                      });
-                    },
-                    showSelectedLabels: false,
-                    showUnselectedLabels: false,
-                    items: const [
-                      BottomNavigationBarItem(
-                          icon: Icon(Icons.home), label: ""),
-                      BottomNavigationBarItem(
-                          icon: Icon(Entypo.water), label: ""),
-                      BottomNavigationBarItem(
-                          icon: Icon(Icons.help), label: ""),
-                      BottomNavigationBarItem(
-                          icon: Icon(Icons.person), label: "")
+    return ScaffoldMessenger(
+      key: _scaffoldkey,
+      child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Image.asset('assets/LogoHorizontal.png', height: 40)),
+            elevation: 0.0,
+          ),
+          bottomNavigationBar: Consumer<PageIndexProvider>(
+            builder: (context, pageIndexProvider, _) {
+              return Container(
+                height: 59,
+                decoration: ShapeDecoration(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25)),
+                    shadows: const [
+                      BoxShadow(
+                          color: Color(0x3F000000),
+                          blurRadius: 3.50,
+                          offset: Offset(0, 3.50),
+                          spreadRadius: 0)
                     ]),
-              ),
-            );
-          },
-        ),
-        body: Consumer<PageIndexProvider>(
-          builder: (context, pageIndexProvider, _) {
-            if (pageIndexProvider.index >= 0 &&
-                pageIndexProvider.index < pages.length) {
-              return pages[pageIndexProvider.index];
-            } else {
-              return Container();
-            }
-          },
-        ));
+                child: ClipRRect(
+                  child: BottomNavigationBar(
+                      type: BottomNavigationBarType.fixed,
+                      backgroundColor: Colors.white,
+                      selectedItemColor: AppTheme.primaryColor,
+                      unselectedItemColor: AppTheme.passiveColor,
+                      currentIndex: pageIndexProvider.index,
+                      onTap: (index) {
+                        setState(() {
+                          pageIndexProvider.changeIndex(index);
+                        });
+                      },
+                      showSelectedLabels: false,
+                      showUnselectedLabels: false,
+                      items: const [
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.home), label: ""),
+                        BottomNavigationBarItem(
+                            icon: Icon(Entypo.water), label: ""),
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.help), label: ""),
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.person), label: "")
+                      ]),
+                ),
+              );
+            },
+          ),
+          body: Consumer<PageIndexProvider>(
+            builder: (context, pageIndexProvider, _) {
+              if (pageIndexProvider.index >= 0 &&
+                  pageIndexProvider.index < pages.length) {
+                return pages[pageIndexProvider.index];
+              } else {
+                return Container();
+              }
+            },
+          )),
+    );
   }
 }
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smartm/page/dashboard_page.dart';
 import 'package:smartm/page/main_nav_page.dart';
 import 'package:smartm/services/auth/auth_service.dart';
 import 'register_page.dart';

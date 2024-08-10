@@ -31,7 +31,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
     String? lastDate;
 
     for (var weather in weatherList) {
-      String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.parse(weather.date));
+      String currentDate =
+          DateFormat('yyyy-MM-dd').format(DateTime.parse(weather.date));
 
       if (lastDate != currentDate) {
         filteredWeather.add(weather);
@@ -47,9 +48,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
     final DateTime today = DateTime.now();
     final DateTime tomorrow = today.add(Duration(days: 1));
 
-    if (DateFormat('yyyy-MM-dd').format(date) == DateFormat('yyyy-MM-dd').format(today)) {
+    if (DateFormat('yyyy-MM-dd').format(date) ==
+        DateFormat('yyyy-MM-dd').format(today)) {
       return "Hari Ini";
-    } else if (DateFormat('yyyy-MM-dd').format(date) == DateFormat('yyyy-MM-dd').format(tomorrow)) {
+    } else if (DateFormat('yyyy-MM-dd').format(date) ==
+        DateFormat('yyyy-MM-dd').format(tomorrow)) {
       return "Besok";
     } else {
       return DateFormat('yyyy-MM-dd').format(date);
@@ -75,7 +78,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
             return Scrollbar(
               child: ListView.builder(
-                scrollDirection: Axis.horizontal, // Menjadikan ListView horizontal
+                scrollDirection:
+                    Axis.horizontal, // Menjadikan ListView horizontal
                 itemCount: filteredWeather.length,
                 itemBuilder: (context, index) {
                   final weather = filteredWeather[index];
@@ -104,7 +108,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
                                 ? Icons.wb_sunny
                                 : Icons.cloud,
                             size: 100.0,
-                            color: weather.description == 'Clear' ? Colors.orange : const Color.fromARGB(255, 207, 207, 207),
+                            color: weather.description == 'Clear'
+                                ? Colors.orange
+                                : const Color.fromARGB(255, 207, 207, 207),
                           ),
                           SizedBox(height: 10),
                           Text(
@@ -127,7 +133,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           Text(
                             'Precipitation: ${weather.precipitation}%',
                             style: TextStyle(
-                              fontSize: 14.0,
+                              fontSize: 12.0,
                               color: Colors.grey[600],
                             ),
                           ),
