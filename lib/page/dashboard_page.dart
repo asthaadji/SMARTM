@@ -14,8 +14,10 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        color: Colors.white,
         padding: const EdgeInsets.all(8),
         child: const SingleChildScrollView(
+          padding: EdgeInsets.all(8.0),
           child: Column(
             children: [
               Align(

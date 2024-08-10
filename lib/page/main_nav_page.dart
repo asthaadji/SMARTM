@@ -39,7 +39,10 @@ class _MainPageState extends State<_MainPage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: Image.asset('assets/LogoHorizontal.png', height: 40),
+          title: Padding(
+            padding:const EdgeInsets.all(4.0),
+            child: Image.asset('assets/LogoHorizontal.png', height: 40)),
+          elevation: 0.0,
         ),
         bottomNavigationBar: Consumer<PageIndexProvider>(
           builder: (context, pageIndexProvider, _) {
