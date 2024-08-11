@@ -4,11 +4,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:smartm/services/auth/auth_model.dart';
+import 'package:smartm/services/iot/iot_model.dart';
+import 'package:smartm/services/iot/iot_service.dart';
 import 'weather_stuff/weather_screen.dart'; // Ubah impor ini
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   final UserLogin user;
-  const DashboardPage({super.key, required this.user});
+  final Function(String) onShowSnackbar;
+  const DashboardPage(
+      {super.key, required this.user, required this.onShowSnackbar});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  late Future<IoTData> futureIoTData;
+  IoTData? selectedData;
+
+  @override
+  void initState() {
+    super.initState();
+    try {
+      futureIoTData = fetchIoTData();
+    } catch (e) {
+      widget.onShowSnackbar('Error fetch IoT data: ${e.toString()}');
+    }
+  }
+
+  void updateSelectedData(IoTData data) {
+    setState(() {
+      selectedData = data;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,30 +44,37 @@ class DashboardPage extends StatelessWidget {
       body: Container(
         color: Colors.white,
         padding: const EdgeInsets.all(8),
-        child: const SingleChildScrollView(
-          padding: EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Align(
+              const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Informasi Cuaca',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               WeatherInfo(),
-              SizedBox(height: 8),
-              Align(
+              const SizedBox(height: 8),
+              const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Peta Sensor IoT',
+                  'Sensor IoT Tersedia',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
               ),
-              SizedBox(height: 8),
-              IoTSensorMap(),
-              SensorData(),
+              const SizedBox(height: 8),
+              IoTSensorList(
+                futureIotData: futureIoTData,
+                onSelectData: updateSelectedData,
+              ),
+              selectedData != null
+                  ? SensorData(
+                      selectedData: selectedData,
+                    )
+                  : const SizedBox(height: 8)
             ],
           ),
         ),
@@ -57,6 +92,67 @@ class WeatherInfo extends StatelessWidget {
     return SizedBox(
       height: 300, // Sesuaikan ketinggian sesuai kebutuhan
       child: WeatherScreen(), // Gantikan dengan WeatherScreen
+    );
+  }
+}
+
+// ignore: must_be_immutable
+class IoTSensorList extends StatefulWidget {
+  final Future<IoTData> futureIotData;
+  final Function(IoTData) onSelectData;
+  const IoTSensorList(
+      {super.key, required this.futureIotData, required this.onSelectData});
+
+  @override
+  State<StatefulWidget> createState() => _IotSensorList();
+}
+
+class _IotSensorList extends State<IoTSensorList> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 300,
+      margin: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+          ),
+        ],
+      ),
+      child: FutureBuilder<IoTData>(
+        future: widget.futureIotData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData) {
+            return const Center(child: Text('No IoT data available'));
+          } else {
+            final data = snapshot.data!;
+            if (!data.deviceStatus) return const SizedBox.shrink();
+            return Column(
+              children: [
+                ListView(shrinkWrap: true, children: [
+                  ListTile(
+                    title: Text('ID IoT: ${data.idIot}'),
+                    subtitle: Text(
+                        'Status: ${data.deviceStatus ? "Active" : "Inactive"}'),
+                    onTap: () {
+                      setState(() => widget.onSelectData(data));
+                    },
+                  )
+                ])
+              ],
+            );
+          }
+        },
+      ),
     );
   }
 }
@@ -114,11 +210,21 @@ class IoTSensorMap extends StatelessWidget {
   // }
 }
 
-class SensorData extends StatelessWidget {
-  const SensorData({Key? key}) : super(key: key);
+// ignore: must_be_immutable
+class SensorData extends StatefulWidget {
+  IoTData? selectedData;
+  SensorData({super.key, required this.selectedData});
 
   @override
+  State<SensorData> createState() => _SensorDataState();
+}
+
+class _SensorDataState extends State<SensorData> {
+  @override
   Widget build(BuildContext context) {
+    if (widget.selectedData == null) {
+      return const SizedBox.shrink();
+    }
     return Container(
       padding: const EdgeInsets.all(16.0),
       margin: const EdgeInsets.all(8.0),
@@ -133,14 +239,26 @@ class SensorData extends StatelessWidget {
           ),
         ],
       ),
-      child: const Column(
+      child: Column(
         children: [
-          SensorDataTile(label: 'Data Kecepatan Angin', value: '12 m/s'),
-          SensorDataTile(label: 'Data Suhu Udara', value: '33°C'),
-          SensorDataTile(label: 'Data Kelembapan Udara', value: '74%'),
-          SensorDataTile(label: 'Data pH Tanah', value: '8 pH'),
-          SensorDataTile(label: 'Data Kelembapan Tanah', value: '62%'),
-          SensorDataTile(label: 'Data Suhu Tanah', value: '29°C'),
+          SensorDataTile(
+              label: 'Data Kecepatan Angin',
+              value: '${widget.selectedData!.windSpeed.toString()} m/s'),
+          SensorDataTile(
+              label: 'Data Suhu Udara',
+              value: '${widget.selectedData!.airTemperature.toString()} °C'),
+          SensorDataTile(
+              label: 'Data Kelembapan Udara',
+              value: '${widget.selectedData!.airHumidity.toString()} %'),
+          SensorDataTile(
+              label: 'Data pH Tanah',
+              value: '${widget.selectedData!.soilPh.toString()} pH'),
+          SensorDataTile(
+              label: 'Data Kelembapan Tanah',
+              value: '${widget.selectedData!.soilMoisture.toString()} %'),
+          SensorDataTile(
+              label: 'Data Suhu Tanah',
+              value: '${widget.selectedData!.soilTemperature.toString()} °C'),
         ],
       ),
     );

@@ -31,7 +31,10 @@ class _MainPageState extends State<_MainPage> {
   final GlobalKey<ScaffoldMessengerState> _scaffoldkey =
       GlobalKey<ScaffoldMessengerState>();
   List<Widget> get pages => [
-        DashboardPage(user: widget.user),
+        DashboardPage(
+          user: widget.user,
+          onShowSnackbar: showSnackBar,
+        ),
         SprinklerPage(
             authToken: widget.user.token, onShowSnackBar: showSnackBar),
         GuidePage(),
