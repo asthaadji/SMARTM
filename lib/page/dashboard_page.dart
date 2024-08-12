@@ -112,6 +112,7 @@ class _IotSensorList extends State<IoTSensorList> {
   Widget build(BuildContext context) {
     return Container(
       height: 300,
+      padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -139,14 +140,15 @@ class _IotSensorList extends State<IoTSensorList> {
             return Column(
               children: [
                 ListView(shrinkWrap: true, children: [
-                  ListTile(
-                    title: Text('ID IoT: ${data.idIot}'),
-                    subtitle: Text(
-                        'Status: ${data.deviceStatus ? "Active" : "Inactive"}'),
-                    onTap: () {
-                      setState(() => widget.onSelectData(data));
-                    },
-                  )
+                  CustomListTile(
+                      isButton: true,
+                      onPressed: () {
+                        setState(() {
+                          widget.onSelectData(data);
+                        });
+                      },
+                      prefix: 'ID IoT: ${data.idIot}',
+                      suffix: 'Status: ${data.deviceStatus}')
                 ])
               ],
             );
@@ -164,6 +166,7 @@ class IoTSensorMap extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 300,
+      padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -241,54 +244,68 @@ class _SensorDataState extends State<SensorData> {
       ),
       child: Column(
         children: [
-          SensorDataTile(
-              label: 'Data Kecepatan Angin',
-              value: '${widget.selectedData!.windSpeed.toString()} m/s'),
-          SensorDataTile(
-              label: 'Data Suhu Udara',
-              value: '${widget.selectedData!.airTemperature.toString()} °C'),
-          SensorDataTile(
-              label: 'Data Kelembapan Udara',
-              value: '${widget.selectedData!.airHumidity.toString()} %'),
-          SensorDataTile(
-              label: 'Data pH Tanah',
-              value: '${widget.selectedData!.soilPh.toString()} pH'),
-          SensorDataTile(
-              label: 'Data Kelembapan Tanah',
-              value: '${widget.selectedData!.soilMoisture.toString()} %'),
-          SensorDataTile(
-              label: 'Data Suhu Tanah',
-              value: '${widget.selectedData!.soilTemperature.toString()} °C'),
+          CustomListTile(
+              prefix: 'Data Kecepatan Angin',
+              suffix: '${widget.selectedData!.windSpeed.toString()} m/s'),
+          CustomListTile(
+              prefix: 'Data Suhu Udara',
+              suffix: '${widget.selectedData!.airTemperature.toString()} °C'),
+          CustomListTile(
+              prefix: 'Data Kelembapan Udara',
+              suffix: '${widget.selectedData!.airHumidity.toString()} %'),
+          CustomListTile(
+              prefix: 'Data pH Tanah',
+              suffix: '${widget.selectedData!.soilPh.toString()} pH'),
+          CustomListTile(
+              prefix: 'Data Kelembapan Tanah',
+              suffix: '${widget.selectedData!.soilMoisture.toString()} %'),
+          CustomListTile(
+              prefix: 'Data Suhu Tanah',
+              suffix: '${widget.selectedData!.soilTemperature.toString()} °C'),
         ],
       ),
     );
   }
 }
 
-class SensorDataTile extends StatelessWidget {
-  final String label;
-  final String value;
+class CustomListTile extends StatelessWidget {
+  final String prefix;
+  final String suffix;
+  final bool? isButton;
+  final VoidCallback? onPressed;
 
-  const SensorDataTile({Key? key, required this.label, required this.value})
+  const CustomListTile(
+      {Key? key,
+      required this.prefix,
+      required this.suffix,
+      this.isButton,
+      this.onPressed})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4.0),
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: isButton == true ? onPressed : null,
         borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: const TextStyle(fontSize: 16)),
-          Text(value,
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        ],
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 4.0),
+          padding: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(prefix, style: const TextStyle(fontSize: 16)),
+              Text(suffix,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ),
       ),
     );
   }
