@@ -56,4 +56,21 @@ class AuthService {
     }
     return UserLogin.fromJson({...userJson, 'token': token});
   }
+
+  Future<void> logoutUser(String authToken) async {
+    final response = await http.delete(Uri.parse('$baseUrl/logout'), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $authToken',
+    });
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      final String message = responseBody['data']['message'];
+      if (message == 'Success Logout User!') {
+        print(message);
+      }
+    } else {
+      throw Exception('Failed to logout user');
+    }
+  }
 }

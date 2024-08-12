@@ -26,6 +26,7 @@ class _SprinklerPageState extends State<SprinklerPage> {
 
   Future<void> fetchSprinklerStatus() async {
     try {
+      if (!mounted) return;
       final status = await _sprinklerService.getSprinklerStatus();
       setState(() {
         sprinkler = status;
@@ -33,6 +34,7 @@ class _SprinklerPageState extends State<SprinklerPage> {
       });
     } catch (e) {
       setState(() {
+        if (!mounted) return;
         isLoading = false;
         widget.onShowSnackBar('Fetch error: ${e.toString()}');
       });

@@ -20,6 +20,10 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   final AuthService _authService = AuthService();
 
+  void showSnackBar(String message) {
+    scaffoldKey.currentState?.showSnackBar(SnackBar(content: Text(message)));
+  }
+
   void _login() async {
     final email = emailController.text;
     final password = passwordController.text;

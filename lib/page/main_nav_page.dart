@@ -38,7 +38,10 @@ class _MainPageState extends State<_MainPage> {
         SprinklerPage(
             authToken: widget.user.token, onShowSnackBar: showSnackBar),
         GuidePage(),
-        UserPage(),
+        UserPage(
+          userLogin: widget.user,
+          onShowSnackBar: showSnackBar,
+        ),
       ];
 
   void showSnackBar(String message) {
