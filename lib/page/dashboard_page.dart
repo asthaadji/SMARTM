@@ -19,14 +19,15 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  late Future<IoTData> futureIoTData;
+  late Future<List<IoTData>> futureIoTData;
   IoTData? selectedData;
 
   @override
   void initState() {
     super.initState();
     try {
-      futureIoTData = fetchIoTData();
+      final dbHelper = IoTDatabaseHelper();
+      futureIoTData = dbHelper.getAllIoTData();
     } catch (e) {
       widget.onShowSnackbar('Error fetch IoT data: ${e.toString()}');
     }
@@ -98,7 +99,7 @@ class WeatherInfo extends StatelessWidget {
 
 // ignore: must_be_immutable
 class IoTSensorList extends StatefulWidget {
-  final Future<IoTData> futureIotData;
+  final Future<List<IoTData>> futureIotData;
   final Function(IoTData) onSelectData;
   const IoTSensorList(
       {super.key, required this.futureIotData, required this.onSelectData});
@@ -125,36 +126,37 @@ class _IotSensorList extends State<IoTSensorList> {
           ),
         ],
       ),
-      child: FutureBuilder<IoTData>(
-        future: widget.futureIotData,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData) {
-            return const Center(child: Text('No IoT data available'));
-          } else {
-            final data = snapshot.data!;
-            if (!data.deviceStatus) return const SizedBox.shrink();
-            return Column(
-              children: [
-                ListView(shrinkWrap: true, children: [
-                  CustomListTile(
-                      isButton: true,
-                      onPressed: () {
-                        setState(() {
-                          widget.onSelectData(data);
-                        });
-                      },
-                      prefix: 'ID IoT: ${data.idIot}',
-                      suffix: 'Status: ${data.deviceStatus}')
-                ])
-              ],
-            );
-          }
+      child: FutureBuilder<List<IoTData>>(
+  future: widget.futureIotData,
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const Center(child: CircularProgressIndicator());
+    } else if (snapshot.hasError) {
+      return Center(child: Text('Error: ${snapshot.error}'));
+    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+      return const Center(child: Text('No IoT data available'));
+    } else {
+      final dataList = snapshot.data!;
+      return ListView.builder(
+        shrinkWrap: true,
+        itemCount: dataList.length,
+        itemBuilder: (context, index) {
+          final data = dataList[index];
+          if (!data.deviceStatus) return const SizedBox.shrink();
+          return CustomListTile(
+            isButton: true,
+            onPressed: () {
+              widget.onSelectData(data);
+            },
+            prefix: 'ID IoT: ${data.idIot}',
+            suffix: 'Status: ${data.deviceStatus}',
+          );
         },
-      ),
+      );
+    }
+  },
+)
+
     );
   }
 }
